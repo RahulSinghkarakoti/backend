@@ -7,10 +7,11 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const genrateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken =await  user.generateAccessToken();
+    const refreshToken =await user.generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });//this will only update the refreshtoken part of scehma and not affect the other stored data
+
     return {accessToken,refreshToken}
 
   } catch (error) {
@@ -33,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //send response to frontend
 
   const { fullname, username, password, email } = req.body;
-  //   console.log(username);
+    console.log(username);
 
   if (
     [fullname, username, password, email].some((field) => field?.trim() === "")
@@ -101,17 +102,20 @@ const loginUser = asyncHandler(async (req, res) => {
   //genr8 access and refresh token
   //send the token in secure cookies
   //send response of successfull login
-
-  const { username, email, password } = req.body;
+  
+  const {  username, password, email } = req.body;
+  console.log(username)
   if (!username && !email) {
     throw new ApiError(400, "username and email is required");
   }
-  const user = User.findOne({
+  const user =await  User.findOne({
     $or: [{ username }, { email }], //find either username andd email and return the first entry that matches
   });
+   
   if (!user) throw new ApiError(404, "username or email is incorrect");
 
-  const isPasswordCorrect = await user.isPasswordCorrect(password);
+  const isPasswordCorrect =await  user.isPasswordCorrect(password);
+
   if (!isPasswordCorrect) throw new ApiError(401, "password is incorrect");
 
  const {accessToken,refreshToken}= await genrateAccessAndRefreshToken(user._id)
@@ -121,7 +125,7 @@ const loginUser = asyncHandler(async (req, res) => {
  const options={
   httpOnly:true, //only server can modify this cookie
   secure:true,
- }
+ } 
 
  return res
  .status(200)
@@ -129,7 +133,9 @@ const loginUser = asyncHandler(async (req, res) => {
  .cookie("refreshToken",refreshToken,options)
  .json(
   new ApiResponse(200,{
-    user:accessToken,refreshToken,loggedInUser  //in case user want to store these token 
+    user:accessToken,
+    refreshToken,
+    loggedInUser  //in case user want to store these token 
   },
   "user logged in successfully"
 )

@@ -19,7 +19,8 @@ extended:true//used to send nestedd object ........ not necesary
 
 app.use(express.static('public'))
 
-app.use(cookieParser())//use to perform CRUD operation on cookies_at user device
+
+app.use(cookieParser());//use to perform CRUD operation on cookies_at user device
 
 //import routes
 import userRouter from "./routes/user.routes.js"

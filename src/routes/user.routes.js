@@ -20,11 +20,11 @@ router.route("/register").post(
     registerUser  
 )
 
+// router.route("/login").post(loginUser)
+
 router.route("/login").post(loginUser)
 
 //secured route
-router.route("/logOut").post(
-    verifyJWT          //middleware
-    ,logoutUser)
+router.route("/logout").post(verifyJWT,  logoutUser)
 
 export default router
