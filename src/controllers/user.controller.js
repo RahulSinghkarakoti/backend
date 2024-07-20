@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //send response to frontend
 
   const { fullname, username, password, email } = req.body;
-  console.log(username);
+  // console.log(req);
 
   if (
     [fullname, username, password, email].some((field) => field?.trim() === "")
@@ -222,7 +222,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const changeCurrentPassword=asyncHandler(async (req,res)=>{
    const {oldPassword,newPassword}=req.body
-   const user=await User.findById(req.User?._id)  //get the user
+  //  console.log(req)
+   const user=await User.findById(req.user?._id)  //get the user
+   console.log(user)
    const isPasswordCorrect=await user.isPasswordCorrect(oldPassword)//check the old password 
    if(!isPasswordCorrect){
     throw new ApiError(400,"old password is incorrect")
@@ -238,7 +240,7 @@ const changeCurrentPassword=asyncHandler(async (req,res)=>{
          "password changed successfully"
     )
    )
-})
+})  
 
 const getCurrentUser=asyncHandler(async(req,res)=>{
   return res.status(200).json(
@@ -262,7 +264,7 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
   // user.save({validateBeforeSave:false})
 
   //2nd approch
-  const user=await User.findByIdAndDelete(
+  const user=await User.findByIdAndUpdate(
     req.user?._id,
     {
       $set:{
@@ -330,7 +332,8 @@ const updateCoverImage=asyncHandler(async(req,res)=>{
    )
 })
 
-const getUserChannelProfile=asyncHandler(async (res, req)=>{
+const getUserChannelProfile=asyncHandler(async (req, res)=>{
+  console.log(req.params)
   const {username}=req.params
   if(!username?.trim())
     throw new ApiError(400,"username is missing")
@@ -392,13 +395,13 @@ const getUserChannelProfile=asyncHandler(async (res, req)=>{
       }
     ]
   )
-
+console.log(channel)
   if(!channel?.length)
   {
     throw new ApiError(500,"chennel doesnot exist")
   }
 
-  return rep.status(200).json(
+  return res.status(200).json(
     new ApiResponse(
       200,
       channel[0],

@@ -29,7 +29,6 @@ router.route("/register").post(
       maxCount: 1,
     },
   ]),
-
   registerUser
 );
 
@@ -50,7 +49,7 @@ router
 
 router
   .route("/cover-image")
-  .patch(verifyJWT, upload.single("/coverImage"), updateCoverImage);
+  .patch(verifyJWT, upload.single("coverImage"), updateCoverImage);
 
 router.route("/channel/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/watch-history").get(verifyJWT, getWatchHistory);
