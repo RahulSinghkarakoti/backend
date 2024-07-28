@@ -267,7 +267,7 @@ const updateVideoViews = asyncHandler(async (req, res) => {
       videoId,
     );
     await user.save();
-    await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } });
+    await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } },{new:true});
   }
   else{
     console.log("already watched");
