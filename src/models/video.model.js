@@ -21,7 +21,7 @@ const videoSchema=new Schema(
             required:true,
         },
         duration:{
-            type:Number, //clounery url
+            type:Number, //from clounery url
             required:true,
         },
         views:{
