@@ -78,8 +78,11 @@ const getUserPlaylists = asyncHandler(async (req, res) => {
   ]);
 
   if (!userPlaylists) throw new ApiError("failed to fetch playlist");
-  if (userPlaylists.length <= 0)
-    throw new ApiError(400, "no playlists are available");
+  if (userPlaylists.length <= 0){
+    return res
+    .status(200)
+    .json(new ApiResponse(400, {},"no playlists are available"));
+  }
 
   return res
     .status(200)

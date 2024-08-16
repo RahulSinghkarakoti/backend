@@ -12,15 +12,12 @@ class ApiError extends Error {
     this.success = false;
     this.message = message;
 
-    if(stack){
-        this.stack=stack
-    }
-    else{
-        Error.captureStackTrace(this,this.constructor)
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
     }
   }
-
-
 }
 
-export {ApiError}
+export { ApiError };

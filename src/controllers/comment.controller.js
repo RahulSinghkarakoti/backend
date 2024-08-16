@@ -31,6 +31,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 as: "owner"
             }
         },
+        
         {
             $lookup:{
                 from: "likes",
@@ -89,13 +90,13 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
 const addComment = asyncHandler(async (req, res) => {
     // TODO: add a comment to a video
-    // console.log("mlkdndfjb")
+    // console.log(req)
     const {videoId}=req.params
     const {comment}=req.body
-    console.log(comment)
+    // console.log(comment)
 
     const video=await  Video.findById(videoId)
-    console.log(video)
+    // console.log(video)
     if(!video)
         throw new ApiError(500,"video not found")
 

@@ -21,9 +21,10 @@ router
   .route("/")
   .get(getAllVideos)
   .post(
-    upload.fields([ 
+    verifyJWT,
+    upload.fields([
       {
-        name: "videoFile",
+        name: "video",
         maxCount: 1,
       },
       {
@@ -43,7 +44,7 @@ router
   .patch(verifyJWT,upload.single("thumbnail"), updateVideo);
 
 router.route("/toggle/publish/:videoId").patch(verifyJWT,togglePublishStatus);
-router.route("/update/views/:videoId").patch( updateVideoViews);
+router.route("/update/views/:videoId").patch(verifyJWT, updateVideoViews);
 
 router.route("/next/:videoId").get(getNextVideos);
 router.route("/v/guest/:videoId").get(getVideoByIdForGuest);

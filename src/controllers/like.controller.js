@@ -6,6 +6,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
+  console.log(videoId)
   //TODO: toggle like on video
   const userId = req.user;
   let likeVideo = await Like.findOne({ video: videoId, likedBy: userId });
@@ -20,6 +21,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
+  console.log(commentId)
   //TODO: toggle like on comment
   const userId = req.user;
   try {
@@ -62,16 +64,22 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 });
 
 const getLikedVideos = asyncHandler(async (req, res) => {
-  const userId = req.user;
+  const userId = req.user?._id;
+  console.log(userId);
   try {
     const likedVideos = await Like.aggregate([
-      { $match: { likedBy: new mongoose.Types.ObjectId(userId) } },
+      {
+        $match: {
+          likedBy: userId, // Ensure userId is an ObjectId
+          video: { $exists: true, $ne: null },
+        },
+      },
       {
         $lookup: {
           from: "videos",
           localField: "video",
           foreignField: "_id",
-          as: "likedvideo",
+          as: "likedVideo",
           pipeline: [
             {
               $match: {
@@ -79,43 +87,47 @@ const getLikedVideos = asyncHandler(async (req, res) => {
               },
             },
             {
-                $lookup:{
-                    from:"users",
-                    localField:"Owner",
-                    foreignField:"_id",
-                    as:"ownerDetail"
-                }
+              $lookup: {
+                from: "users",
+                localField: "Owner",
+                foreignField: "_id",
+                as: "ownerDetail",
+              },
             },
             {
-                $unwind:"$ownerDetail"
-            }
+              $unwind: "$ownerDetail",
+            },
+            {
+              $project: {
+                _id: 1,
+                title: 1,
+                description: 1,
+                thumbnail: 1,
+                duration: 1,
+                views: 1,
+                isPublished: 1,
+                "ownerDetail._id": 1,
+                "ownerDetail.username": 1,
+                "ownerDetail.fullname": 1,
+                "ownerDetail.avatar": 1,
+              },
+            },
           ],
         },
       },
       {
-        $unwind: "$likedvideo",
+        $unwind: "$likedVideo",
       },
+
       {
         $project: {
-          _id: 1,
-          video: 1,
-          likedvideo: {
-            _id: 1,
-            title: 1,
-            video: 1,
-            thumbnail: 1,
-            isPublished: 1,
-            ownerDetail:{
-                username:1,
-                avatar:1,
-                fullname:1,
-            }
-          },
+          likedVideo: 1, 
+          // 'ownerDetail.username':1
         },
       },
     ]);
 
-    // console.log(likedVideos);
+    console.log(likedVideos);
     if (!likedVideos) throw new ApiError(500, "error in vediolike agrregation");
 
     return res
