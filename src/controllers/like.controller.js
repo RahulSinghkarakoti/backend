@@ -53,10 +53,10 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
       await Like.findByIdAndDelete(tweetLike._id);
       return res
         .status(200)
-        .json(new ApiResponse(200, null, "comment unliked "));
+        .json(new ApiResponse(200, null, "tweet unliked "));
     } else {
       tweetLike = await Like.create({ tweet: tweetId, likedBy: userId });
-      return res.status(200).json(new ApiResponse(200, null, "comment liked "));
+      return res.status(200).json(new ApiResponse(200, null, "tweet liked "));
     }
   } catch (error) {
     throw new ApiError(500, "failed to fetch the user/tweet info ");
