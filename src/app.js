@@ -36,7 +36,7 @@ import healthcheckRouter from "./routes/healthcheck.routes.js"
 import dashboardRouter from "./routes/dashboard.routes.js"
 
 //routes declaration
-app.get('/',(req,res)=>{
+app.get('/api/v1',(req,res)=>{
     res.send('welcome to my api')
 })
 app.use('/api/v1/users',userRouter) 
