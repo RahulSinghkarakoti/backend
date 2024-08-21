@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
   //TODO: get all comments for a video
-  console.log(req.user._id);
+  //(req.user._id);
   const { videoId } = req.params;
   const { page = 1, limit = 10 } = req.query;
 
@@ -113,13 +113,13 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
 const addComment = asyncHandler(async (req, res) => {
   // TODO: add a comment to a video
-  // console.log(req)
+  // //(req)
   const { videoId } = req.params;
   const { comment } = req.body;
-  // console.log(comment)
+  // //(comment)
 
   const video = await Video.findById(videoId);
-  // console.log(video)
+  // //(video)
   if (!video) throw new ApiError(500, "video not found");
 
   const newComment = await Comment.create({

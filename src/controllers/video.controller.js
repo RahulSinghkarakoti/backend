@@ -10,7 +10,7 @@ import { deleteOnCloudinary, uploadOnCloudinary } from "../utils/Cloudinary.js";
 const getAllVideos = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10, query, sortBy, sortType, userId } = req.query;
   //TODO: get all videos based on query, sort, pagination
-  console.log(req.query);
+  // //console.log(req.query);
   const pageNumber = parseInt(page, 10);
   const limitNumber = parseInt(limit, 10);
   const sortDirection = sortType === "asc" ? 1 : -1;
@@ -106,7 +106,7 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, description } = req.body;
-  // console.log(req)
+  // //console.log(req)
   // TODO: get video, upload to cloudinary, create video
   //uploade vedio on coluinery
   //get url strnig
@@ -123,8 +123,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     throw new ApiError(402, "title and description is already exist");
   }
 
-  console.log("file recieved: ", req.files);
-  console.log("Body received:", req.body);
+  // //console.log("file recieved: ", req.files);
+  // //console.log("Body received:", req.body);
   const videoLocalPath = req.files?.video[0]?.path;
   const thumbnailLocalPath = req.files?.thumbnail[0]?.path;
 
@@ -141,7 +141,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
     );
   }
 
-  // console.log(video, "......?.....", thumbnail);
+  // //console.log(video, "......?.....", thumbnail);
 
   const videoInstence = await Video.create({
     title,
@@ -162,7 +162,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   //TODO: get video by id
   //fetch vedio from schema
   //return res
-  console.log(req.user._id)
+  // //console.log(req.user._id)
   const video = await Video.aggregate([
     {
       $match: {
@@ -242,7 +242,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   );
 
   if (!inWatchHistory) {
-    console.log("first time watching");
+    // //console.log("first time watching");
     user.watchHistory.push(videoId);
     await user.save();
     await Video.findByIdAndUpdate(
@@ -278,7 +278,7 @@ const updateVideo = asyncHandler(async (req, res) => {
     const match = url.match(regex);
     return match ? match[1] : null;
   }
-  console.log(extractPublicId(video.thumbnail));
+  // //console.log(extractPublicId(video.thumbnail));
   const delelteOldThumbnail = await deleteOnCloudinary(
     extractPublicId(video.thumbnail)
   );
@@ -421,11 +421,11 @@ const updateVideoViews = asyncHandler(async (req, res) => {
   //if exists then update last viewd time
   //else increment views by 1 and add vedioId to watchhistory
   //return res
-  console.log("in update views")
+  // //console.log("in update views")
   const { videoId } = req.params;
-  console.log(videoId)
-  // console.log(typeof videoId);
-  // console.log(req.user);
+  // //console.log(videoId)
+  // //console.log(typeof videoId);
+  // //console.log(req.user);
   const userId = req.user._id;
   if (!isValidObjectId(videoId)) throw new ApiError(400, "invalid videoId");
   if (!userId) throw new ApiError(400, "invalid userId");
@@ -434,13 +434,13 @@ const updateVideoViews = asyncHandler(async (req, res) => {
   if (!video) throw new ApiError(400, "video  not found ");
 
   const user = await User.findById(userId);
-  // console.log(user.watchHistory);
+  // //console.log(user.watchHistory);
   const inWatchHistory = user.watchHistory.find(
     (item) => item.toString() === videoId
   );
-  // console.log(inWatchHistory);
+  // //console.log(inWatchHistory);
   if (!inWatchHistory) {
-    console.log("first time watching");
+    // //console.log("first time watching");
     user.watchHistory.push(videoId);
     await user.save();
     await Video.findByIdAndUpdate(
@@ -449,7 +449,7 @@ const updateVideoViews = asyncHandler(async (req, res) => {
       { new: true }
     );
   } else {
-    // console.log("");
+    // //console.log("");
     return res
     .status(200)
     .json(new ApiResponse(200, { }, "already watched"));

@@ -94,90 +94,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
   //TODO: get playlist by id
   if (!playlistId) throw new ApiError("playlist Id is required");
 
-  try {
-    // const playlist = await Playlist.aggregate([
-    //   {
-    //     $match: {
-    //       _id: new mongoose.Types.ObjectId(playlistId),
-    //     },
-    //   }, 
-    //   {
-
-    //     $lookup: {
-    //       from: "videos",
-    //       localField: "videos",
-    //       foreignField: "_id",
-    //       as: "videos",
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       "videos.isPublished": true,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "users",
-    //       localField: "owner",
-    //       foreignField: "_id",
-    //       as: "owner",
-    //     },
-    //   },
-    //   {
-    //     $addFields: {
-    //       totalVideos: {
-    //         $size: "$videos",
-    //       },
-    //       totalViews: {
-    //         $cond:{
-    //           if:{$gt:[{$size:"$videos"},0]},
-    //           then:{$sum:"$videos.views"},
-    //           else:0
-    //         }
-    //       },
-    //       totalDuration: {
-    //         $cond:{
-    //           if:{$gt:[{$size:"$videos"},0]},
-    //           then:{$sum: "$videos.duration"},
-    //           else:0
-    //         }
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $unwind:{
-    //       path:"$owner",
-    //       preserveNullAndEmptyArrays: true
-    //     }
-
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       name: 1,
-    //       description: 1,
-    //       totalDuration: 1,
-    //       totalVideos: 1,
-    //       totalViews: 1,
-    //       createdAt: 1,
-    //       updatedAt: 1,
-    //       videos: {
-    //         _id: 1,
-    //         title: 1, 
-    //         thumbnail: 1,
-    //         duration: 1,
-    //         views: 1,
-    //       },
-    //       owner: {
-    //         _id: 1,
-    //         avatar: 1,
-    //         username: 1,
-    //         fullname: 1,
-    //       },
-    //     },
-    //   },
-    // ]);
-
+  try { 
     const playlist = await Playlist.aggregate([
       {
         $match: {
@@ -277,14 +194,7 @@ const getPlaylistById = asyncHandler(async (req, res) => {
         },
       },
     ]);
-    
-    
-
-    
-  
-   
-    // const playlist=await Playlist.findById(playlistId)
-    // console.log(playlist);
+     
     if (!playlist) throw new ApiError(500, "failed to fetch playlist");
   
     return res

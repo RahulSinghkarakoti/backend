@@ -6,7 +6,6 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const toggleVideoLike = asyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  console.log(videoId)
   //TODO: toggle like on video
   const userId = req.user;
   let likeVideo = await Like.findOne({ video: videoId, likedBy: userId });
@@ -21,7 +20,6 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
 const toggleCommentLike = asyncHandler(async (req, res) => {
   const { commentId } = req.params;
-  console.log(commentId)
   //TODO: toggle like on comment
   const userId = req.user;
   try {
@@ -65,7 +63,6 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
 
 const getLikedVideos = asyncHandler(async (req, res) => {
   const userId = req.user?._id;
-  console.log(userId);
   try {
     const likedVideos = await Like.aggregate([
       {
@@ -127,7 +124,7 @@ const getLikedVideos = asyncHandler(async (req, res) => {
       },
     ]);
 
-    console.log(likedVideos);
+    //(likedVideos);
     if (!likedVideos) throw new ApiError(500, "error in vediolike agrregation");
 
     return res

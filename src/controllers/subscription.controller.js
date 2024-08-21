@@ -9,7 +9,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
   const { channelId } = req.params;
   // TODO: toggle subscription
   const userId = req.user._id;
-  // console.log(userId, channelId);
+  // (userId, channelId);
   
   if (userId == channelId)
     throw new ApiError(400, "You can't subscribe to yourself");
@@ -115,78 +115,7 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params;
   
-    // const subscribedChannels = await Subscription.aggregate([
-    //   {
-    //     $match: {
-    //       subscriber: new mongoose.Types.ObjectId(subscriberId),
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "users",
-    //       localField: "channel",
-    //       foreignField: "_id",
-    //       as: "subscribedChannel",
-    //       pipeline: [
-    //         {
-    //           $lookup: {
-    //             from: "videos",
-    //             localField: "_id",
-    //             foreignField: "owner",
-    //             as: "videos",
-    //             pipeline: [
-    //               {
-    //                 $match: {
-    //                   isPublished: true
-    //                 }
-    //               },
-    //               {
-    //                 $sort: { createdAt: -1 }
-    //               },
-    //               {
-    //                 $limit: 1
-    //               }
-    //             ]
-    //           },
-    //         },
-    //         {
-    //           $addFields: {
-    //             latestVideo: {
-    //               $arrayElemAt: ["$videos", 0]
-    //             },
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   },
-    //   {
-    //     $unwind: "$subscribedChannel",
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 0,
-    //       subscribedChannel: {
-    //         _id: 1,
-    //         username: 1,
-    //         fullName: 1,
-    //         avatar: 1,
-    //         latestVideo: {
-    //           _id: 1,
-    //           video: 1,
-    //           thumbnail: 1,
-    //           owner: 1,
-    //           title: 1,
-    //           description: 1,
-    //           duration: 1,
-    //           createdAt: 1,
-    //           views: 1,
-    //           ownerDetails: 1,
-    //         },
-    //       },
-    //     },
-    //   },
-    // ]);
-
+    
     const subscribedChannels = await Subscription.aggregate([
       {
         $match: {

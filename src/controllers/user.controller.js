@@ -13,7 +13,7 @@ const genrateAccessAndRefreshToken = async (userId) => {
     const refreshToken = await user.generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false }); //this will only update the refreshtoken part of scehma and not affect the other stored data
-    console.log("in genr8 refereshtoken:", refreshToken);
+    //console.log("in genr8 refereshtoken:", refreshToken);
 
     return { accessToken, refreshToken };
   } catch (error) {
@@ -36,7 +36,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //send response to frontend
 
   const { fullname, username, password, email } = req.body;
-  // console.log(req);
+  // //console.log(req);
 
   if (
     [fullname, username, password, email].some((field) => field?.trim() === "")
@@ -51,7 +51,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "user with name or email already exist");
   }
 
-  console.log(req.files);
+  //console.log(req.files);
 
   const avatarLocalPath = req.files?.avatar[0]?.path; // this will fetch the avatar media file from .files (provided by multer)
   //   const coverImageeLocalPath=  req.files?.coverImage[0]?.path   //this is causing error ,if coverImage is not sent
@@ -124,7 +124,7 @@ const loginUser = asyncHandler(async (req, res) => {
   //send response of successfull login
 
   const { username, password, email } = req.body;
-  console.log(username);
+  //console.log(username);
   if (!username && !email) {
     throw new ApiError(400, "username and email is required");
   }
@@ -195,7 +195,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
-  console.log("in refersh token");
+  //console.log("in refersh token");
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
   if (!incomingRefreshToken) {
@@ -242,9 +242,9 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  //  console.log(req)
+  //  //console.log(req)
   const user = await User.findById(req.user?._id); //get the user
-  console.log(user);
+  //console.log(user);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword); //check the old password
   if (!isPasswordCorrect) {
     throw new ApiError(400, "old password is incorrect");
@@ -341,7 +341,7 @@ const updateCoverImage = asyncHandler(async (req, res) => {
 });
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
-  console.log(req.params);
+  //console.log(req.params);
   const { username } = req.params;
   if (!username?.trim()) throw new ApiError(400, "username is missing");
 
@@ -401,7 +401,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
       },
     },
   ]);
-  console.log(channel);
+  //console.log(channel);
   if (!channel?.length) {
     throw new ApiError(500, "chennel doesnot exist");
   }
@@ -412,7 +412,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
-  console.log(req.user._id)
+  //console.log(req.user._id)
   const user = await User.aggregate([
     {
       $match: {

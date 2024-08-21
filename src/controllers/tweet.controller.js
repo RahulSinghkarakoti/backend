@@ -7,7 +7,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet
-  console.log(req);
+  // console.log(req);
   const { content } = req.body;
   const user = await User.findById(req.user._id);
   if (!user) throw new ApiError(400, "User not found");

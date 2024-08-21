@@ -71,7 +71,7 @@ const getChannelStats = asyncHandler(async (req, res) => {
     if(!videoStats)
         throw new ApiError(500,"failed to fetch total video, likes and views")
 
-    console.log(videoStats,totalSubscribers)
+    //console.log(videoStats,totalSubscribers)
 
     const channelStats={
         totalSubscribers:totalSubscribers[0]?.subscribersCount || 0,
