@@ -95,9 +95,10 @@ const updateTweet = asyncHandler(async (req, res) => {
   //TODO: update tweet
   const { tweetId } = req.params;
   const { content } = req.body;
+  console.log(content,tweetId)
   if (!tweetId || !content)
     throw new ApiError(400, "invalid tweetId or content");
-  const tweet = await Tweet.findByIdAndUpdate(tweetId, { content: content });
+  const tweet = await Tweet.findByIdAndUpdate(tweetId,{content:content}) 
   if (!tweet) throw new ApiError(500, "failed to update tweet");
 
   return res

@@ -79,8 +79,6 @@ const getAllVideos = asyncHandler(async (req, res) => {
         },
       },
     ]);
-    
-    
 
     // Get the total count of videos that match the filter
     const totalVideos = await Video.countDocuments(filter);
@@ -181,13 +179,28 @@ const getVideoById = asyncHandler(async (req, res) => {
       $unwind: "$ownerDetail",
     },
     {
-      $lookup:{
-        from:"likes",
-        localField:"_id",
-        foreignField:"video",
-        as:"likes"
+      $lookup: {
+        from: "likes",
+        localField: "_id",
+        foreignField: "video",
+        as: "likes",
       },
-    }, 
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "Owner",
+        foreignField: "channel",
+        as: "subscribers",
+        pipeline: [
+          {
+            $match: {
+              subscriber: req.user._id,
+            },
+          },
+        ],
+      },
+    },
     {
       $addFields: {
         likeCount: { $size: "$likes" }, // Count the number of likes
@@ -211,9 +224,20 @@ const getVideoById = asyncHandler(async (req, res) => {
             else: false,
           },
         },
+        isSubscribed: {
+          $cond: {
+            if: {
+              $gt: [
+                {$size: "$subscribers"},0
+              ],
+            },
+            then: true,
+            else: false,
+          },
+        },
       },
     },
-     
+
     {
       $project: {
         _id: 1,
@@ -223,8 +247,9 @@ const getVideoById = asyncHandler(async (req, res) => {
         video: 1,
         views: 1,
         duration: 1,
-        likeCount:1,
-        isLikedByUser:1,
+        likeCount: 1,
+        isLikedByUser: 1,
+        isSubscribed:1,
         "ownerDetail.username": 1,
         "ownerDetail.avatar": 1,
         "ownerDetail._id": 1,
@@ -235,7 +260,7 @@ const getVideoById = asyncHandler(async (req, res) => {
   if (!video.length) {
     throw new ApiError(400, "video donot exist");
   }
-  const user=await User.findById(req.user._id)
+  const user = await User.findById(req.user._id);
 
   const inWatchHistory = user.watchHistory.find(
     (item) => item.toString() === videoId
@@ -250,7 +275,7 @@ const getVideoById = asyncHandler(async (req, res) => {
       { $inc: { views: 1 } },
       { new: true }
     );
-  }  
+  }
 
   return res
     .status(200)
@@ -450,9 +475,7 @@ const updateVideoViews = asyncHandler(async (req, res) => {
     );
   } else {
     // //console.log("");
-    return res
-    .status(200)
-    .json(new ApiResponse(200, { }, "already watched"));
+    return res.status(200).json(new ApiResponse(200, {}, "already watched"));
   }
   return res
     .status(200)
