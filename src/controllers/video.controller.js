@@ -235,6 +235,9 @@ const getVideoById = asyncHandler(async (req, res) => {
             else: false,
           },
         },
+        totalSubscribers:{
+          $size: "$subscribers"
+        }
       },
     },
 
@@ -250,6 +253,7 @@ const getVideoById = asyncHandler(async (req, res) => {
         likeCount: 1,
         isLikedByUser: 1,
         isSubscribed:1,
+        totalSubscribers:1,
         "ownerDetail.username": 1,
         "ownerDetail.avatar": 1,
         "ownerDetail._id": 1,
