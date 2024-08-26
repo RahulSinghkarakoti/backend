@@ -192,13 +192,6 @@ const getVideoById = asyncHandler(async (req, res) => {
         localField: "Owner",
         foreignField: "channel",
         as: "subscribers",
-        pipeline: [
-          {
-            $match: {
-              subscriber: req.user._id,
-            },
-          },
-        ],
       },
     },
     {
@@ -227,17 +220,15 @@ const getVideoById = asyncHandler(async (req, res) => {
         isSubscribed: {
           $cond: {
             if: {
-              $gt: [
-                {$size: "$subscribers"},0
-              ],
+              $in: [req.user._id, "$subscribers.subscriber"],
             },
             then: true,
             else: false,
           },
         },
-        totalSubscribers:{
-          $size: "$subscribers"
-        }
+        totalSubscribers: {
+          $size: "$subscribers",
+        },
       },
     },
 
@@ -252,8 +243,9 @@ const getVideoById = asyncHandler(async (req, res) => {
         duration: 1,
         likeCount: 1,
         isLikedByUser: 1,
-        isSubscribed:1,
-        totalSubscribers:1,
+        isSubscribed: 1,
+        totalSubscribers: 1,
+        subscribers: 1,
         "ownerDetail.username": 1,
         "ownerDetail.avatar": 1,
         "ownerDetail._id": 1,
